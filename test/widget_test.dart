@@ -3,12 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gastrack_app/main.dart';
+import 'package:gastrack_app/features/auth/data/auth_repository.dart';
+import 'mock_auth.dart';
 
 void main() {
   group('GasTrack App Shell', () {
     testWidgets('renders four bottom navigation items', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(child: GasTrackApp()),
+        ProviderScope(
+          overrides: [
+            authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+          ],
+          child: const GasTrackApp(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -20,7 +27,12 @@ void main() {
 
     testWidgets('starts on Dashboard tab', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(child: GasTrackApp()),
+        ProviderScope(
+          overrides: [
+            authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+          ],
+          child: const GasTrackApp(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -36,7 +48,12 @@ void main() {
 
     testWidgets('navigates to History tab on tap', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(child: GasTrackApp()),
+        ProviderScope(
+          overrides: [
+            authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+          ],
+          child: const GasTrackApp(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -49,7 +66,12 @@ void main() {
 
     testWidgets('navigates to Maintenance tab on tap', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(child: GasTrackApp()),
+        ProviderScope(
+          overrides: [
+            authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+          ],
+          child: const GasTrackApp(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -61,7 +83,12 @@ void main() {
 
     testWidgets('navigates to Settings tab on tap', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(child: GasTrackApp()),
+        ProviderScope(
+          overrides: [
+            authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+          ],
+          child: const GasTrackApp(),
+        ),
       );
       await tester.pumpAndSettle();
 
