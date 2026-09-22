@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gastrack_app/main.dart';
 import 'package:gastrack_app/features/auth/data/auth_repository.dart';
+import 'package:gastrack_app/features/vehicles/data/vehicle_repository.dart';
 import 'mock_auth.dart';
 
 void main() {
@@ -13,6 +14,7 @@ void main() {
         ProviderScope(
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+            vehiclesProvider.overrideWith((ref) => Future.value([])),
           ],
           child: const GasTrackApp(),
         ),
@@ -30,6 +32,7 @@ void main() {
         ProviderScope(
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+            vehiclesProvider.overrideWith((ref) => Future.value([])),
           ],
           child: const GasTrackApp(),
         ),
@@ -51,6 +54,7 @@ void main() {
         ProviderScope(
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+            vehiclesProvider.overrideWith((ref) => Future.value([])),
           ],
           child: const GasTrackApp(),
         ),
@@ -69,6 +73,7 @@ void main() {
         ProviderScope(
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+            vehiclesProvider.overrideWith((ref) => Future.value([])),
           ],
           child: const GasTrackApp(),
         ),
@@ -86,6 +91,7 @@ void main() {
         ProviderScope(
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
+            vehiclesProvider.overrideWith((ref) => Future.value([])),
           ],
           child: const GasTrackApp(),
         ),
