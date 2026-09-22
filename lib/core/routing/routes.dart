@@ -11,4 +11,10 @@ abstract class AppRoutes {
   static const String historyName = 'history';
   static const String maintenanceName = 'maintenance';
   static const String settingsName = 'settings';
+
+  static const String login = '/login';
+  static const String loginName = 'login';
+
+  static const String register = '/register';
+  static const String registerName = 'register';
 }

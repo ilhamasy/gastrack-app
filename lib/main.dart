@@ -13,11 +13,13 @@ void main() {
 }
 
 /// Root application widget for GasTrack.
-class GasTrackApp extends StatelessWidget {
+class GasTrackApp extends ConsumerWidget {
   const GasTrackApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return MaterialApp.router(
       title: 'GasTrack',
       debugShowCheckedModeBanner: false,
@@ -36,7 +38,7 @@ class GasTrackApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }
