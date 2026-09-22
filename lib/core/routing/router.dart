@@ -14,6 +14,7 @@ import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/vehicles/presentation/my_vehicles_screen.dart';
 import '../../features/vehicles/presentation/add_edit_vehicle_screen.dart';
 import '../../features/vehicles/domain/vehicle.dart';
+import '../../features/dashboard/presentation/odometer_history_screen.dart';
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
@@ -74,6 +75,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.dashboard,
                 name: AppRoutes.dashboardName,
                 builder: (context, state) => const DashboardScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.odometerHistory,
+                    name: AppRoutes.odometerHistoryName,
+                    builder: (context, state) {
+                      final vehicleId = state.extra as String;
+                      return OdometerHistoryScreen(vehicleId: vehicleId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

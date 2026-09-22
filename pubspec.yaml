@@ -47,6 +47,7 @@ dependencies:
   # Local storage / cache
   shared_preferences: ^2.3.5
   flutter_secure_storage: ^11.2.0
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:

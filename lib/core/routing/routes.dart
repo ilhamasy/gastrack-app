@@ -21,6 +21,9 @@ abstract class AppRoutes {
   static const String editVehicle = 'edit-vehicle/:id';
   static const String editVehicleName = 'edit-vehicle';
 
+  static const String odometerHistory = 'odometer-history';
+  static const String odometerHistoryName = 'odometer-history';
+
   static const String login = '/login';
   static const String loginName = 'login';
 
