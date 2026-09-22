@@ -39,7 +39,27 @@ class MyVehiclesScreen extends ConsumerWidget {
                 subtitle: Text('${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant}'),
                 trailing: vehicle.isPrimary 
                     ? const Icon(Icons.star, color: Colors.amber)
-                    : null,
+                    : PopupMenuButton<String>(
+                        onSelected: (value) async {
+                          if (value == 'set_primary') {
+                            try {
+                              await ref.read(vehicleRepositoryProvider).setPrimaryVehicle(vehicle.id);
+                              ref.invalidate(vehiclesProvider);
+                              ref.invalidate(primaryVehicleProvider);
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                              }
+                            }
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'set_primary',
+                            child: Text('Set as Primary'),
+                          ),
+                        ],
+                      ),
                 onTap: () {
                   context.pushNamed(
                     AppRoutes.editVehicleName,

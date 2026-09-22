@@ -58,6 +58,10 @@ class VehicleRepository {
   Future<void> deleteVehicle(String id) async {
     await _dio.delete('/vehicles/$id');
   }
+
+  Future<void> setPrimaryVehicle(String id) async {
+    await _dio.put('/vehicles/$id/primary');
+  }
 }
 
 final vehicleRepositoryProvider = Provider<VehicleRepository>((ref) {
@@ -68,4 +72,14 @@ final vehicleRepositoryProvider = Provider<VehicleRepository>((ref) {
 final vehiclesProvider = FutureProvider<List<Vehicle>>((ref) {
   final repository = ref.watch(vehicleRepositoryProvider);
   return repository.getVehicles();
+});
+
+final primaryVehicleProvider = FutureProvider<Vehicle?>((ref) async {
+  final vehicles = await ref.watch(vehiclesProvider.future);
+  try {
+    return vehicles.firstWhere((v) => v.isPrimary);
+  } catch (e) {
+    if (vehicles.isNotEmpty) return vehicles.first;
+    return null;
+  }
 });
