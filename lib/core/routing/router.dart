@@ -11,6 +11,9 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
 import '../../features/maintenance/presentation/maintenance_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/vehicles/presentation/my_vehicles_screen.dart';
+import '../../features/vehicles/presentation/add_edit_vehicle_screen.dart';
+import '../../features/vehicles/domain/vehicle.dart';
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
@@ -98,6 +101,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.settings,
                 name: AppRoutes.settingsName,
                 builder: (context, state) => const SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.myVehicles,
+                    name: AppRoutes.myVehiclesName,
+                    builder: (context, state) => const MyVehiclesScreen(),
+                    routes: [
+                      GoRoute(
+                        path: AppRoutes.addVehicle,
+                        name: AppRoutes.addVehicleName,
+                        builder: (context, state) => const AddEditVehicleScreen(),
+                      ),
+                      GoRoute(
+                        path: AppRoutes.editVehicle,
+                        name: AppRoutes.editVehicleName,
+                        builder: (context, state) {
+                          final vehicle = state.extra as Vehicle?;
+                          return AddEditVehicleScreen(vehicle: vehicle);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

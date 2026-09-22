@@ -12,6 +12,15 @@ abstract class AppRoutes {
   static const String maintenanceName = 'maintenance';
   static const String settingsName = 'settings';
 
+  static const String myVehicles = 'my-vehicles';
+  static const String myVehiclesName = 'my-vehicles';
+  
+  static const String addVehicle = 'add-vehicle';
+  static const String addVehicleName = 'add-vehicle';
+
+  static const String editVehicle = 'edit-vehicle/:id';
+  static const String editVehicleName = 'edit-vehicle';
+
   static const String login = '/login';
   static const String loginName = 'login';
 
