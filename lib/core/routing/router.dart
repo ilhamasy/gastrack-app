@@ -10,6 +10,7 @@ import '../../features/auth/presentation/register_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/dashboard/presentation/odometer_history_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
+import '../../features/history/presentation/add_service_record_screen.dart';
 import '../../features/maintenance/presentation/maintenance_screen.dart';
 import '../../features/maintenance/presentation/maintenance_detail_screen.dart';
 import '../../features/maintenance/presentation/maintenance_config_screen.dart';
@@ -98,6 +99,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.history,
                 name: AppRoutes.historyName,
                 builder: (context, state) => const HistoryScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.addServiceRecord,
+                    name: AppRoutes.addServiceRecordName,
+                    builder: (context, state) {
+                      final vehicleId = state.pathParameters['vehicleId']!;
+                      return AddServiceRecordScreen(vehicleId: vehicleId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
