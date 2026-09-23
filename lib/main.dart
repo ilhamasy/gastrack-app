@@ -3,11 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/routing/router.dart';
 
-void main() {
+import 'package:shared_preferences/shared_preferences.dart';
+import 'core/providers.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final sharedPrefs = await SharedPreferences.getInstance();
+
   runApp(
-    // ProviderScope is required at the root for Riverpod to function.
-    const ProviderScope(
-      child: GasTrackApp(),
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      ],
+      child: const GasTrackApp(),
     ),
   );
 }
