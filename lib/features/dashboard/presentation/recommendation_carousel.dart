@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../domain/recommendation.dart';
 
 class RecommendationCarousel extends StatefulWidget {
   final List<Recommendation> recommendations;
 
-  const RecommendationCarousel({Key? key, required this.recommendations}) : super(key: key);
+  const RecommendationCarousel({super.key, required this.recommendations});
 
   @override
-  _RecommendationCarouselState createState() => _RecommendationCarouselState();
+  State<RecommendationCarousel> createState() => _RecommendationCarouselState();
 }
 
 class _RecommendationCarouselState extends State<RecommendationCarousel> {

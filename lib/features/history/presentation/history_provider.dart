@@ -11,6 +11,6 @@ final historyProvider = FutureProvider<List<ServiceRecord>>((ref) async {
       return ref.read(historyRepositoryProvider).getServiceRecords(vehicle.id);
     },
     loading: () => [],
-    error: (_, __) => [],
+    error: (err, stack) => [],
   );
 });

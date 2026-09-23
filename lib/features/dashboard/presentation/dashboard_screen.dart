@@ -10,7 +10,7 @@ import 'recommendation_carousel.dart';
 import '../../../core/routing/routes.dart';
 
 class DashboardScreen extends ConsumerWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -327,8 +327,8 @@ class DashboardScreen extends ConsumerWidget {
                   final newValue = int.parse(controller.text);
                   try {
                     await ref.read(odometerRepositoryProvider).logOdometer(vehicleId, newValue);
-                    ref.refresh(primaryVehicleProvider.future);
-                    ref.refresh(vehicleMaintenanceProvider(vehicleId).future);
+                    ref.invalidate(primaryVehicleProvider);
+                    ref.invalidate(vehicleMaintenanceProvider(vehicleId));
                     if (context.mounted) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Odometer updated successfully')));
