@@ -31,6 +31,21 @@ class ServiceRecord {
       'items': items.map((i) => i.toJson()).toList(),
     };
   }
+
+  factory ServiceRecord.fromJson(Map<String, dynamic> json) {
+    return ServiceRecord(
+      id: json['id'],
+      vehicleId: json['vehicle_id'],
+      serviceDate: DateTime.parse(json['service_date']),
+      odometerKm: json['odometer_km'],
+      workshopName: json['workshop_name'],
+      totalCost: (json['total_cost'] as num).toDouble(),
+      notes: json['notes'],
+      items: json['items'] != null
+          ? (json['items'] as List).map((i) => ServiceItem.fromJson(i)).toList()
+          : [],
+    );
+  }
 }
 
 class ServiceItem {
@@ -68,5 +83,19 @@ class ServiceItem {
       'cost': cost,
       'notes': notes,
     };
+  }
+
+  factory ServiceItem.fromJson(Map<String, dynamic> json) {
+    return ServiceItem(
+      id: json['id'],
+      maintenanceId: json['maintenance_id'],
+      itemName: json['item_name'],
+      brand: json['brand'],
+      product: json['product'],
+      partNumber: json['part_number'],
+      quantity: (json['quantity'] as num).toDouble(),
+      cost: (json['cost'] as num).toDouble(),
+      notes: json['notes'],
+    );
   }
 }

@@ -23,4 +23,14 @@ class HistoryRepository {
       throw Exception('Failed to add service record: $e');
     }
   }
+
+  Future<List<ServiceRecord>> getServiceRecords(String vehicleId) async {
+    try {
+      final response = await _dio.get('/api/vehicles/$vehicleId/service-records');
+      final List<dynamic> data = response.data;
+      return data.map((e) => ServiceRecord.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch service records: $e');
+    }
+  }
 }

@@ -11,6 +11,8 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/dashboard/presentation/odometer_history_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
 import '../../features/history/presentation/add_service_record_screen.dart';
+import '../../features/history/presentation/service_record_detail_screen.dart';
+import '../../features/history/domain/service_record.dart';
 import '../../features/maintenance/presentation/maintenance_screen.dart';
 import '../../features/maintenance/presentation/maintenance_detail_screen.dart';
 import '../../features/maintenance/presentation/maintenance_config_screen.dart';
@@ -106,6 +108,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) {
                       final vehicleId = state.pathParameters['vehicleId']!;
                       return AddServiceRecordScreen(vehicleId: vehicleId);
+                    },
+                  ),
+                  GoRoute(
+                    path: AppRoutes.serviceRecordDetail,
+                    name: AppRoutes.serviceRecordDetailName,
+                    builder: (context, state) {
+                      final record = state.extra as ServiceRecord;
+                      return ServiceRecordDetailScreen(record: record);
                     },
                   ),
                 ],
