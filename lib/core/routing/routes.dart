@@ -21,6 +21,14 @@ abstract class AppRoutes {
   static const String editVehicle = 'edit-vehicle/:id';
   static const String editVehicleName = 'edit-vehicle';
 
+  static const String maintenanceConfig = 'maintenance-config/:vehicleId';
+  static const String maintenanceConfigName = 'maintenance-config';
+
+  static const String addMaintenance = 'add-maintenance/:vehicleId';
+  static const String addMaintenanceName = 'add-maintenance';
+
+  static const String editMaintenance = 'edit-maintenance/:vehicleId/:id';
+  static const String editMaintenanceName = 'edit-maintenance';
   static const String odometerHistory = 'odometer-history';
   static const String odometerHistoryName = 'odometer-history';
 

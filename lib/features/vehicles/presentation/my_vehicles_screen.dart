@@ -37,29 +37,44 @@ class MyVehiclesScreen extends ConsumerWidget {
                 leading: const Icon(Icons.motorcycle),
                 title: Text(vehicle.name),
                 subtitle: Text('${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant}'),
-                trailing: vehicle.isPrimary 
-                    ? const Icon(Icons.star, color: Colors.amber)
-                    : PopupMenuButton<String>(
-                        onSelected: (value) async {
-                          if (value == 'set_primary') {
-                            try {
-                              await ref.read(vehicleRepositoryProvider).setPrimaryVehicle(vehicle.id);
-                              ref.invalidate(vehiclesProvider);
-                              ref.invalidate(primaryVehicleProvider);
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-                              }
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (vehicle.isPrimary) const Icon(Icons.star, color: Colors.amber),
+                    PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        if (value == 'set_primary') {
+                          try {
+                            await ref.read(vehicleRepositoryProvider).setPrimaryVehicle(vehicle.id);
+                            ref.invalidate(vehiclesProvider);
+                            ref.invalidate(primaryVehicleProvider);
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
                             }
                           }
-                        },
-                        itemBuilder: (context) => [
+                        } else if (value == 'maintenance_config') {
+                          context.pushNamed(
+                            AppRoutes.maintenanceConfigName,
+                            pathParameters: {'vehicleId': vehicle.id},
+                            extra: vehicle,
+                          );
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        if (!vehicle.isPrimary)
                           const PopupMenuItem(
                             value: 'set_primary',
                             child: Text('Set as Primary'),
                           ),
-                        ],
-                      ),
+                        const PopupMenuItem(
+                          value: 'maintenance_config',
+                          child: Text('Maintenance Config'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 onTap: () {
                   context.pushNamed(
                     AppRoutes.editVehicleName,
