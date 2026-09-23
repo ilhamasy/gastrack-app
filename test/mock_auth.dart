@@ -17,10 +17,6 @@ class MockAuthNotifier extends AuthNotifier {
   }
 
   @override
-  Future<bool> register(String email, String password) async {
-    return true;
-  }
-
   @override
   Future<void> logout() async {
     state = AuthState(isAuthenticated: false, isLoading: false, error: null);

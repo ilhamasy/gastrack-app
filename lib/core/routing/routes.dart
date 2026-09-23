@@ -9,6 +9,8 @@ abstract class AppRoutes {
   // Names
   static const String dashboardName = 'dashboard';
   static const String historyName = 'history';
+  static const String addServiceRecord = 'add-service-record/:vehicleId';
+  static const String addServiceRecordName = 'add-service-record';
   static const String maintenanceName = 'maintenance';
   static const String maintenanceDetail = 'detail/:id';
   static const String maintenanceDetailName = 'maintenance-detail';
