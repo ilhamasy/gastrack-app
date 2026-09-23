@@ -88,7 +88,7 @@ class HistoryScreen extends ConsumerWidget {
               onPressed: () {
                 context.goNamed(
                   AppRoutes.addServiceRecordName,
-                  pathParameters: {'vehicleId': vehicleAsync.value!.id!},
+                  pathParameters: {'vehicleId': vehicleAsync.value!.id},
                 );
               },
               child: const Icon(Icons.add),

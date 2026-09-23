@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gastrack_app/main.dart';
 import 'package:gastrack_app/features/auth/data/auth_repository.dart';
 import 'package:gastrack_app/features/vehicles/data/vehicle_repository.dart';
-import 'package:dio/dio.dart';
 import 'package:gastrack_app/features/settings/data/preferences_repository.dart';
 import 'package:gastrack_app/features/settings/domain/preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';

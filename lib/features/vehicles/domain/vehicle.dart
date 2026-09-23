@@ -45,7 +45,30 @@ class Vehicle {
       'variant': variant,
       'year': year,
       'is_primary': isPrimary,
-      'current_odometer': currentOdometer,
     };
+  }
+
+  Vehicle copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    String? make,
+    String? model,
+    String? variant,
+    int? year,
+    bool? isPrimary,
+    int? currentOdometer,
+  }) {
+    return Vehicle(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      make: make ?? this.make,
+      model: model ?? this.model,
+      variant: variant ?? this.variant,
+      year: year ?? this.year,
+      isPrimary: isPrimary ?? this.isPrimary,
+      currentOdometer: currentOdometer ?? this.currentOdometer,
+    );
   }
 }
