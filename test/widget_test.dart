@@ -8,17 +8,28 @@ import 'package:gastrack_app/features/vehicles/data/vehicle_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:gastrack_app/features/settings/data/preferences_repository.dart';
 import 'package:gastrack_app/features/settings/domain/preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:gastrack_app/core/providers.dart';
 import 'mock_auth.dart';
 
-class MockPreferencesNotifier extends PreferencesNotifier {
-  MockPreferencesNotifier() : super(PreferencesRepository(Dio())) {
-    state = AsyncValue.data(NotificationPreferences(emailEnabled: true, pushEnabled: true));
+class MockPreferencesRepository implements PreferencesRepository {
+  @override
+  Future<NotificationPreferences> getPreferences() async {
+    return NotificationPreferences(emailEnabled: true, pushEnabled: true);
   }
   @override
-  Future<void> updatePreferences(NotificationPreferences prefs) async {}
+  Future<NotificationPreferences> updatePreferences(NotificationPreferences prefs) async {
+    return prefs;
+  }
 }
 
 void main() {
+  SharedPreferences.setMockInitialValues({});
+  late SharedPreferences prefs;
+
+  setUpAll(() async {
+    prefs = await SharedPreferences.getInstance();
+  });
   group('GasTrack App Shell', () {
     testWidgets('renders four bottom navigation items', (tester) async {
       await tester.pumpWidget(
@@ -26,7 +37,8 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
-            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
+            preferencesRepositoryProvider.overrideWithValue(MockPreferencesRepository()),
+            sharedPreferencesProvider.overrideWithValue(prefs),
           ],
           child: const GasTrackApp(),
         ),
@@ -45,7 +57,8 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
-            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
+            preferencesRepositoryProvider.overrideWithValue(MockPreferencesRepository()),
+            sharedPreferencesProvider.overrideWithValue(prefs),
           ],
           child: const GasTrackApp(),
         ),
@@ -68,7 +81,8 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
-            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
+            preferencesRepositoryProvider.overrideWithValue(MockPreferencesRepository()),
+            sharedPreferencesProvider.overrideWithValue(prefs),
           ],
           child: const GasTrackApp(),
         ),
@@ -88,7 +102,8 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
-            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
+            preferencesRepositoryProvider.overrideWithValue(MockPreferencesRepository()),
+            sharedPreferencesProvider.overrideWithValue(prefs),
           ],
           child: const GasTrackApp(),
         ),
@@ -107,7 +122,8 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
-            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
+            preferencesRepositoryProvider.overrideWithValue(MockPreferencesRepository()),
+            sharedPreferencesProvider.overrideWithValue(prefs),
           ],
           child: const GasTrackApp(),
         ),
