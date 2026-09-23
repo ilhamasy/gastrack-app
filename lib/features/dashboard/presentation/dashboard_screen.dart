@@ -5,21 +5,45 @@ import '../../vehicles/data/vehicle_repository.dart';
 import '../../maintenance/data/maintenance_repository.dart';
 import '../data/odometer_repository.dart';
 import '../data/expense_repository.dart';
+import '../data/recommendation_repository.dart';
+import 'recommendation_carousel.dart';
 import '../../../core/routing/routes.dart';
 
 class DashboardScreen extends ConsumerWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final primaryVehicleAsync = ref.watch(primaryVehicleProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              ref.invalidate(primaryVehicleProvider);
+            },
+          ),
+        ],
+      ),
       body: primaryVehicleAsync.when(
         data: (vehicle) {
           if (vehicle == null) {
-            return const Center(child: Text('No Primary Vehicle Selected'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No primary vehicle selected.'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.goNamed(AppRoutes.myVehiclesName),
+                    child: const Text('Manage Vehicles'),
+                  ),
+                ],
+              ),
+            );
           }
 
           // Fetch maintenance items for the primary vehicle
@@ -30,17 +54,53 @@ class DashboardScreen extends ConsumerWidget {
             children: [
               // Vehicle Header
               Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.blue.shade100,
+                        child: const Icon(Icons.directions_car, size: 30, color: Colors.blue),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(vehicle.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text('${vehicle.make} ${vehicle.model} (${vehicle.year})', style: TextStyle(color: Colors.grey.shade600)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Recommendations Carousel
+              ref.watch(recommendationsProvider(vehicle.id)).when(
+                data: (recommendations) => RecommendationCarousel(recommendations: recommendations),
+                loading: () => const SizedBox(height: 160, child: Center(child: CircularProgressIndicator())),
+                error: (err, st) => const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 16),
+
+              // Odometer Update
+              Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      const Icon(Icons.two_wheeler, size: 64, color: Colors.blue),
+                      const Icon(Icons.speed, size: 64, color: Colors.blue),
                       const SizedBox(height: 8),
-                      Text(
-                        vehicle.name,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      const Text(
+                        'Odometer',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      Text('${vehicle.year} ${vehicle.make} ${vehicle.model}'),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -53,7 +113,7 @@ class DashboardScreen extends ConsumerWidget {
                           ),
                           ElevatedButton.icon(
                             onPressed: () => _showUpdateOdometerDialog(context, ref, vehicle.id, vehicle.currentOdometer),
-                            icon: const Icon(Icons.speed),
+                            icon: const Icon(Icons.edit),
                             label: const Text('Update'),
                           ),
                         ],
