@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../vehicles/data/vehicle_repository.dart';
+import '../../maintenance/data/maintenance_repository.dart';
 import '../data/odometer_repository.dart';
 import '../../../core/routing/routes.dart';
 
@@ -14,46 +15,127 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard')),
-      body: Center(
-        child: primaryVehicleAsync.when(
-          data: (vehicle) {
-            if (vehicle == null) {
-              return const Text('No Primary Vehicle Selected');
-            }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Active Vehicle', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                const SizedBox(height: 8),
-                Text(
-                  vehicle.name,
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      body: primaryVehicleAsync.when(
+        data: (vehicle) {
+          if (vehicle == null) {
+            return const Center(child: Text('No Primary Vehicle Selected'));
+          }
+
+          // Fetch maintenance items for the primary vehicle
+          final maintenanceAsync = ref.watch(vehicleMaintenanceProvider(vehicle.id));
+
+          return ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              // Vehicle Header
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.two_wheeler, size: 64, color: Colors.blue),
+                      const SizedBox(height: 8),
+                      Text(
+                        vehicle.name,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Text('${vehicle.year} ${vehicle.make} ${vehicle.model}'),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              const Text('Current Odometer', style: TextStyle(color: Colors.grey)),
+                              Text('${vehicle.currentOdometer} KM', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () => _showUpdateOdometerDialog(context, ref, vehicle.id, vehicle.currentOdometer),
+                            icon: const Icon(Icons.speed),
+                            label: const Text('Update'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Text('${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant}'),
-                const SizedBox(height: 32),
-                const Text('Current Odometer', style: TextStyle(fontSize: 16, color: Colors.grey)),
-                Text(
-                  '${vehicle.currentOdometer} KM',
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () => _showUpdateOdometerDialog(context, ref, vehicle.id, vehicle.currentOdometer),
-                  icon: const Icon(Icons.speed),
-                  label: const Text('Update Odometer'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.pushNamed(AppRoutes.odometerHistory, extra: vehicle.id);
-                  },
-                  child: const Text('View Odometer History'),
-                ),
-              ],
-            );
-          },
-          loading: () => const CircularProgressIndicator(),
-          error: (err, stack) => Text('Error: $err'),
-        ),
+              ),
+              
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Upcoming Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  TextButton(
+                    onPressed: () {
+                      // Navigate to maintenance tab, which is in the StatefulShellRoute
+                      // For now, we can just pushNamed or the user can tap the tab.
+                      // Since we are in a tab, let's just let them tap the tab, or we can use GoRouter context.go
+                      context.goNamed(AppRoutes.maintenanceName);
+                    },
+                    child: const Text('Show More'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              
+              maintenanceAsync.when(
+                data: (items) {
+                  if (items.isEmpty) {
+                    return const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('No upcoming maintenance.')));
+                  }
+                  // Items are already sorted by priority by backend
+                  final topItems = items.take(3).toList();
+                  return Column(
+                    children: topItems.map((item) {
+                      Color statusColor = Colors.grey;
+                      IconData statusIcon = Icons.check_circle;
+                      
+                      if (item.priority == 1) {
+                        statusColor = Colors.red;
+                        statusIcon = Icons.warning;
+                      } else if (item.priority == 2) {
+                        statusColor = Colors.orange;
+                        statusIcon = Icons.info;
+                      } else if (item.priority == 3) {
+                        statusColor = Colors.yellow.shade700;
+                        statusIcon = Icons.error_outline;
+                      } else if (item.priority == 4) {
+                        statusColor = Colors.blue;
+                        statusIcon = Icons.schedule;
+                      } else if (item.priority == 5) {
+                        statusColor = Colors.green;
+                        statusIcon = Icons.check_circle;
+                      }
+                      
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: Icon(statusIcon, color: statusColor),
+                          title: Text(item.name),
+                          subtitle: Text('Due in ${item.remainingKm} km / ${item.remainingDays} days'),
+                          trailing: Text(item.status ?? 'Normal', style: TextStyle(color: statusColor, fontWeight: FontWeight.bold)),
+                          onTap: () {
+                            context.goNamed(
+                              AppRoutes.maintenanceDetailName,
+                              pathParameters: {'id': item.id},
+                              extra: item,
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, st) => Text('Error: $e'),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
       ),
     );
   }
@@ -99,10 +181,11 @@ class DashboardScreen extends ConsumerWidget {
                   final newValue = int.parse(controller.text);
                   try {
                     await ref.read(odometerRepositoryProvider).logOdometer(vehicleId, newValue);
+                    ref.refresh(primaryVehicleProvider.future);
+                    ref.refresh(vehicleMaintenanceProvider(vehicleId).future);
                     if (context.mounted) {
                       Navigator.pop(context);
-                      // Invalidate vehicles provider to get updated currentOdometer
-                      ref.invalidate(vehiclesProvider);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Odometer updated successfully')));
                     }
                   } catch (e) {
                     if (context.mounted) {
