@@ -5,7 +5,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gastrack_app/main.dart';
 import 'package:gastrack_app/features/auth/data/auth_repository.dart';
 import 'package:gastrack_app/features/vehicles/data/vehicle_repository.dart';
+import 'package:dio/dio.dart';
+import 'package:gastrack_app/features/settings/data/preferences_repository.dart';
+import 'package:gastrack_app/features/settings/domain/preferences.dart';
 import 'mock_auth.dart';
+
+class MockPreferencesNotifier extends PreferencesNotifier {
+  MockPreferencesNotifier() : super(PreferencesRepository(Dio())) {
+    state = AsyncValue.data(NotificationPreferences(emailEnabled: true, pushEnabled: true));
+  }
+  @override
+  Future<void> updatePreferences(NotificationPreferences prefs) async {}
+}
 
 void main() {
   group('GasTrack App Shell', () {
@@ -15,6 +26,7 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
+            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
           ],
           child: const GasTrackApp(),
         ),
@@ -33,6 +45,7 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
+            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
           ],
           child: const GasTrackApp(),
         ),
@@ -55,6 +68,7 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
+            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
           ],
           child: const GasTrackApp(),
         ),
@@ -74,6 +88,7 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
+            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
           ],
           child: const GasTrackApp(),
         ),
@@ -92,6 +107,7 @@ void main() {
           overrides: [
             authProvider.overrideWith((ref) => MockAuthNotifier(ref.read(dioProvider), ref.read(secureStorageProvider))),
             vehiclesProvider.overrideWith((ref) => Future.value([])),
+            preferencesProvider.overrideWith((ref) => MockPreferencesNotifier()),
           ],
           child: const GasTrackApp(),
         ),
