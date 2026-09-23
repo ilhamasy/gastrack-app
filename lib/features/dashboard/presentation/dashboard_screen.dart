@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../vehicles/data/vehicle_repository.dart';
 import '../../maintenance/data/maintenance_repository.dart';
 import '../data/odometer_repository.dart';
+import '../data/expense_repository.dart';
 import '../../../core/routing/routes.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -131,6 +132,91 @@ class DashboardScreen extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, st) => Text('Error: $e'),
               ),
+              
+              const SizedBox(height: 24),
+              const Text('Expense Analytics (Last 6 Months)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              
+              ref.watch(expenseAnalyticsProvider(vehicle.id)).when(
+                data: (analytics) {
+                  if (analytics.monthlyExpenses.isEmpty && analytics.categoryExpenses.isEmpty) {
+                    return const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('No expense data.')));
+                  }
+                  
+                  return Column(
+                    children: [
+                      // Monthly chart placeholder - replace with actual fl_chart BarChart later
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Monthly Expenses', style: TextStyle(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                height: 200,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: analytics.monthlyExpenses.length,
+                                  itemBuilder: (ctx, i) {
+                                    final exp = analytics.monthlyExpenses[i];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 16),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: (exp.totalCost / 1000).clamp(10, 150).toDouble(), // arbitrary scale
+                                            color: Colors.blue,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(exp.month, style: const TextStyle(fontSize: 10)),
+                                          Text('\$${exp.totalCost.toStringAsFixed(0)}', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Category list
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('By Category', style: TextStyle(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 16),
+                              ...analytics.categoryExpenses.map((cat) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(cat.category),
+                                      Text('\$${cat.totalCost.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, st) => Text('Error: $e'),
+              ),
+              const SizedBox(height: 32),
             ],
           );
         },
