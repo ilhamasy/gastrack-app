@@ -11,6 +11,7 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/dashboard/presentation/odometer_history_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
 import '../../features/maintenance/presentation/maintenance_screen.dart';
+import '../../features/maintenance/presentation/maintenance_detail_screen.dart';
 import '../../features/maintenance/presentation/maintenance_config_screen.dart';
 import '../../features/maintenance/presentation/add_edit_maintenance_screen.dart';
 import '../../features/maintenance/domain/vehicle_maintenance.dart';
@@ -106,6 +107,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.maintenance,
                 name: AppRoutes.maintenanceName,
                 builder: (context, state) => const MaintenanceScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.maintenanceDetail,
+                    name: AppRoutes.maintenanceDetailName,
+                    builder: (context, state) {
+                      final item = state.extra as VehicleMaintenance;
+                      return MaintenanceDetailScreen(maintenance: item);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
